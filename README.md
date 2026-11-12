@@ -36,14 +36,12 @@ FlashFeed pulls in financial news, social media chatter, screener data and live 
 
 ```mermaid
 flowchart LR
-  A["📰 News wires<br/>PR Newswire · Benzinga · SEC"] --> K(("Kafka"))
-  B["💬 Social<br/>Reddit · StockTwits · Bluesky · X"] --> K
-  C["📊 Screeners<br/>Finviz Elite · TradingView · Schwab"] --> K
-  K --> S["🧠 Sentiment<br/>FinBERT + rule-based fast path"]
-  S --> M[("MongoDB")]
-  M --> R[("Redis cache")]
-  R --> API["Express / Hono API"]
-  API --> UI["⚛️ React dashboard<br/>News · Screener · Social · Charts<br/>Momentum · Correlation"]
+  A["📰 News"] --> K(("Kafka"))
+  B["💬 Social"] --> K
+  C["📊 Screeners"] --> K
+  K --> S["🧠 FinBERT<br/>sentiment"]
+  S --> M[("MongoDB<br/>+ Redis")]
+  M --> UI["⚛️ React<br/>dashboard"]
 ```
 
 <table>
