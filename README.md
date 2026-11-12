@@ -21,6 +21,60 @@
 
 ### 🚀 Featured projects
 
+### ⚡ [FlashFeed](https://github.com/Amansome/FLASHFEED-DASHBOARD): real-time market intelligence platform
+*Team capstone · a Bloomberg-style terminal for retail investors*
+
+FlashFeed pulls in financial news, social media chatter, screener data and live prices from **30+ sources**, scores sentiment with **FinBERT**, and streams everything through **Kafka** into an 8-page React dashboard covering **8,000+ US stocks**.
+
+<p>
+  <img src="https://img.shields.io/badge/30%2B-data%20sources-2563eb?style=flat-square" />
+  <img src="https://img.shields.io/badge/8%2C000%2B-US%20equities-2563eb?style=flat-square" />
+  <img src="https://img.shields.io/badge/8-dashboard%20pages-2563eb?style=flat-square" />
+  <img src="https://img.shields.io/badge/FinBERT-sentiment-7c3aed?style=flat-square" />
+  <img src="https://img.shields.io/badge/Kafka-event%20streaming-231F20?style=flat-square&logo=apachekafka" />
+</p>
+
+```mermaid
+flowchart LR
+  A["📰 News wires<br/>PR Newswire · Benzinga · SEC"] --> K(("Kafka"))
+  B["💬 Social<br/>Reddit · StockTwits · Bluesky · X"] --> K
+  C["📊 Screeners<br/>Finviz Elite · TradingView · Schwab"] --> K
+  K --> S["🧠 Sentiment<br/>FinBERT + rule-based fast path"]
+  S --> M[("MongoDB")]
+  M --> R[("Redis cache")]
+  R --> API["Express / Hono API"]
+  API --> UI["⚛️ React dashboard<br/>News · Screener · Social · Charts<br/>Momentum · Correlation"]
+```
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+**What the platform does**
+- Candlestick charts with Bollinger Bands, RSI and MACD, with social-media volume and sentiment overlaid on price
+- 1-minute bars resampled in the browser to 5m–1h, so timeframe changes are instant
+- Momentum "trade watch" scoring that combines price, social volume and news sentiment
+- News-to-price correlation analysis
+- Two sentiment paths: rule-based (500 articles in under 30 s) and FinBERT for accuracy
+
+</td>
+<td width="50%" valign="top">
+
+**What I built**
+- 📈 **Sentiment charting system** (`/sentcharts`) for plotting sentiment against price
+- 🎯 **Entry Screener, Exit Screener and Window Mirror** pages
+- 🔄 Migrated candlestick charts to **lightweight-charts v5**
+- 🔐 **Self-healing Finviz Elite auth** for the chart service
+- 🚀 **Production deployment**: frontend and backend served from one Railway origin, a Vercel API proxy, Docker base switched from Alpine to Debian-slim for standalone builds, and a CI workflow that syncs from upstream
+
+</td>
+</tr>
+</table>
+
+`React` `TypeScript` `Vite` `Express` `Hono` `Python` `FinBERT` `Kafka` `MongoDB` `Redis` `Docker` `Railway` `Vercel`
+
+<br/>
+
 <table>
 <tr>
 <td width="50%" valign="top">
@@ -71,15 +125,6 @@ Free, open-source, **local-first chess opening trainer** with spaced repetition.
 - Offline PWA, mobile-first, keyboard and screen-reader friendly
 
 `TypeScript` `IndexedDB` `Service Worker` `Stockfish`
-
-</td>
-</tr>
-<tr>
-<td colspan="2" valign="top">
-
-#### ⚡ [FlashFeed](https://github.com/Amansome/FLASHFEED-DASHBOARD): team capstone
-Real-time market dashboard aggregating news, social sentiment, screeners and momentum signals, with a stock-price prediction view.
-`Kafka` `Redis` `MongoDB` `Docker` `React` `Python`
 
 </td>
 </tr>
