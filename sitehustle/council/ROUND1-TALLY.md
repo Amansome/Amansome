@@ -100,11 +100,11 @@ Every seat added something distinct. No seat is flagged.
 
 "Other" is always allowed.
 
-- **A. Do nothing.** Backed in Round 1 as the fallback by owner, skeptic, competitor and finance if their gates fail, and as an outcome by all seven if the test produces nothing.
+- **A.** **Do nothing.** Backed in Round 1 as the fallback by owner, skeptic, competitor and finance if their gates fail, and as an outcome by all seven if the test produces nothing.
   - Cost: $0.
   - Main risk: forgoing a small, uncertain upside; the built system goes unused.
 
-- **B. Fix, then a hand-approved email test.** Apply the shared fixes (section C):
+- **B.** **Fix, then a hand-approved email test.** Apply the shared fixes (section C):
   - a permitted sending channel, confirmed in writing;
   - honest email copy with an ad disclosure;
   - private state;
@@ -117,17 +117,17 @@ Every seat added something distinct. No seat is flagged.
   - Cost: setup plus fix work; about 1 to 3 hours of the user's time over 2 to 3 weeks.
   - Main risk: no permitted provider may exist; low supply may make the test too small to read.
 
-- **C. Count supply, change the offer, then test.** First, a free count of 30 to 50 nearby places by type (own decent site / POS or vendor site / no site with a published email). Then change the offer: a stated hosting term with handover or an optional renewal or care plan, and a real menu-update path. Target only the no-site, no-vendor niche. Then run B's test. If the count falls below the pre-declared thresholds, go to A or D instead.
+- **C.** **Count supply, change the offer, then test.** First, a free count of 30 to 50 nearby places by type (own decent site / POS or vendor site / no site with a published email). Then change the offer: a stated hosting term with handover or an optional renewal or care plan, and a real menu-update path. Target only the no-site, no-vendor niche. Then run B's test. If the count falls below the pre-declared thresholds, go to A or D instead.
   - Backed (closest fit) by: competitor, finance; skeptic's Step 0.
   - Cost: as B, plus 1 to 2 hours of agent time and offer redesign.
   - Main risk: delays any test; the redesigned offer is itself untested.
 
-- **D. Human-first channel; email only after contact.** The strongest minority view. First contact is in person (showing a preview on a phone), by phone, or by a hand-sent message from the user's own name. Email follows only after a reply or meeting. Automatic first-touch email is never used. Start with 5 in-person conversations, as the cheapest test.
+- **D.** **Human-first channel; email only after contact.** The strongest minority view. First contact is in person (showing a preview on a phone), by phone, or by a hand-sent message from the user's own name. Email follows only after a reply or meeting. Automatic first-touch email is never used. Start with 5 in-person conversations, as the cheapest test.
   - Backed (closest fit) by: owner; skeptic in part; deliverability as its fallback if no permitted provider exists.
   - Cost: the most user time (about 2 hours for 5 visits, more to scale).
   - Main risk: contradicts the user's stated goal of near-zero involvement; may still not sell.
 
-- **E. The user's stated preference, with fixes.** Launch after all of section C's fixes, with a trial measured by a count of reviewed batches rather than a date, then automatic sending. No seat backed this in Round 1. It is listed so it can be voted on explicitly.
+- **E.** **The user's stated preference, with fixes.** Launch after all of section C's fixes, with a trial measured by a count of reviewed batches rather than a date, then automatic sending. No seat backed this in Round 1. It is listed so it can be voted on explicitly.
   - Cost: as B.
   - Main risk: unreviewed AI-written outreach in the user's own town; the provider terms problem returns at higher volume.
 
