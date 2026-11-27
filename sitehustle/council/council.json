@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "title": "Launch SiteHustle as built, after fixes, changed, or not at all",
+  "slug": "launch-sitehustle-as-built-after-fixes-c",
+  "dossier": 1,
+  "date": "2026-11-27",
+  "mode": "parallel",
+  "seats": [
+    {
+      "id": "owner",
+      "title": "Independent restaurant owner (the customer pitched)",
+      "group": "Customers",
+      "weight": 2.0
+    },
+    {
+      "id": "skeptic",
+      "title": "Skeptic (argues for not doing it, or doing less)",
+      "group": "Critics",
+      "weight": 1
+    },
+    {
+      "id": "deliverability",
+      "title": "Email deliverability and anti-spam compliance specialist",
+      "group": "Experts",
+      "weight": 1
+    },
+    {
+      "id": "lawyer",
+      "title": "Small-business lawyer (flags issues only)",
+      "group": "Oversight",
+      "weight": 1
+    },
+    {
+      "id": "competitor",
+      "title": "Competing local web designer / DIY builder (archetype)",
+      "group": "Competitors",
+      "weight": 1
+    },
+    {
+      "id": "ops",
+      "title": "Operations engineer (unattended reliability)",
+      "group": "Engineering",
+      "weight": 1
+    },
+    {
+      "id": "finance",
+      "title": "Unit-economics and finance",
+      "group": "Finance",
+      "weight": 1
+    }
+  ]
+}
