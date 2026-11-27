@@ -16,7 +16,7 @@ See ADDENDUM-01A. The ones that changed the picture:
 - Item 7: the $400 and $75 prices cannot be charged; payment amounts are not checked.
 - Items 8 and 9: Option B's cost is understated; the builder's "only account setup remains" is withdrawn.
 
-The verifier's second pass, on claims made in the Round 1 reports, is in progress. Any corrections will be published as ADDENDUM-01B before Round 2 votes are counted.
+The verifier's second pass (ADDENDUM-01B) checked 52 claims made in the Round 1 reports: 40 confirmed. It reproduced the reported code defects independently (item 10). It qualified the crash re-send (item 11) and the Netlify deploy-cost input (item 12). It corrected minor details: `config.yaml` is not on the runbook's commit list (item 13), the preview's structured data (item 14), Slice's $1,000 implementation fee (item 15), and a guidance date and PO box terms (item 16).
 
 ## B. Positions
 
