@@ -2,14 +2,14 @@ Subject: Re: {{ subject }}
 
 Hi {{ greeting }},
 
-Just following up in case my last email got buried. The new site I made for {{ r.name }} is still up for you to look at:
+Following up once on my note about a website for {{ r.name }}. The concept is still here if you'd like to look:
 {{ r.preview_url }}
 
-${{ offer.price_usd }} one time, with no monthly fees. Happy to change anything you'd like first. If it's not a fit, no worries, and I won't email again.
+${{ offer.price_usd }} one time, nothing due until you're happy with it. If it's not a fit, no worries. This is my last email about it.
 
 {{ biz.sender_name }}
-{{ biz.name }}
+{{ biz.name }}{% if biz.phone %} · {{ biz.phone }}{% endif %}
 
 --
-{{ biz.name }} · {{ biz.postal_address }}
+This is a sales email from {{ biz.name }}, {{ biz.postal_address }}.
 Reply "unsubscribe" and you won't hear from me again.

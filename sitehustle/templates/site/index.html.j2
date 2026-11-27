@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ r.name }}{% if r.city %} | {{ r.cuisine_label or "Restaurant" }} in {{ r.city }}{% endif %}</title>
 <meta name="description" content="{{ r.meta_description }}">
-{% if preview %}<meta name="robots" content="noindex, nofollow">{% endif %}
+{% if preview %}<meta name="robots" content="noindex, nofollow, noarchive">{% endif %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family={{ theme.display_font_url }}&family={{ theme.body_font_url }}&display=swap" rel="stylesheet">
@@ -103,11 +103,11 @@ footer small{opacity:.6;display:block;margin-top:24px;width:100%}
   body{padding-bottom:52px}
 }
 </style>
-<script type="application/ld+json">{{ r.jsonld | safe }}</script>
+{% if not preview %}<script type="application/ld+json">{{ r.jsonld | safe }}</script>{% endif %}
 </head>
 <body>
 {% if preview %}
-<div class="preview-bar">Free concept preview made for <strong>{{ r.name }}</strong> by {{ biz.name }}. Not live. <a href="{{ r.claim_url }}">Make it yours</a></div>
+<div class="preview-bar">Concept preview by {{ biz.name }} for <strong>{{ r.name }}</strong>. Not affiliated with or approved by {{ r.name }}. Not a live site.</div>
 {% endif %}
 
 <header class="nav">
@@ -127,7 +127,7 @@ footer small{opacity:.6;display:block;margin-top:24px;width:100%}
     <div class="wrap">
       <div class="eyebrow">{{ r.cuisine_label or "Restaurant" }}{% if r.city %} &middot; {{ r.city }}{% endif %}</div>
       <h1>{{ r.headline or r.name }}</h1>
-      <p class="lede">{{ r.tagline }}</p>
+      {% if r.tagline %}<p class="lede">{{ r.tagline }}</p>{% endif %}
       <div class="actions">
         {% if r.menu %}<a class="btn" href="#menu">View Menu</a>{% endif %}
         {% if r.order_url %}<a class="btn ghost" href="{{ r.order_url }}">Order Online</a>
@@ -149,7 +149,7 @@ footer small{opacity:.6;display:block;margin-top:24px;width:100%}
   <section id="about">
     <div class="wrap about{% if not r.about_image %} solo{% endif %}">
       <div>
-        <h2>{{ r.about_title or "Our story" }}</h2>
+        <h2>{{ r.about_title or "About" }}</h2>
         {% for p in r.about %}<p>{{ p }}</p>{% endfor %}
       </div>
       {% if r.about_image %}<div class="photo" role="img" aria-label="{{ r.name }}"></div>{% endif %}
@@ -161,7 +161,7 @@ footer small{opacity:.6;display:block;margin-top:24px;width:100%}
   <section id="menu" class="menu">
     <div class="wrap">
       <h2>Menu</h2>
-      <p class="sub">{{ r.menu_intro or "Made fresh, every day." }}</p>
+      {% if r.menu_intro %}<p class="sub">{{ r.menu_intro }}</p>{% endif %}
       {% if r.menu|length > 1 %}
       <div class="menu-tabs" role="tablist">
         {% for s in r.menu %}<button role="tab" aria-selected="{{ 'true' if loop.first else 'false' }}" data-tab="m{{ loop.index }}">{{ s.section }}</button>{% endfor %}
@@ -229,7 +229,7 @@ footer small{opacity:.6;display:block;margin-top:24px;width:100%}
     <div style="display:flex;gap:18px;align-items:center">
       {% for label, url in (r.social or {}).items() %}<a href="{{ url }}" style="text-decoration:none;opacity:.85">{{ label|title }}</a>{% endfor %}
     </div>
-    <small>&copy; {{ year }} {{ r.name }}. Site by {{ biz.name }}.</small>
+    <small>{% if preview %}Concept preview by {{ biz.name }}. All names, menus and prices belong to {{ r.name }}.{% else %}&copy; {{ year }} {{ r.name }}. Site by {{ biz.name }}.{% endif %}</small>
   </div>
 </footer>
 

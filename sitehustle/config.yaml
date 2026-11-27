@@ -1,48 +1,54 @@
-# SiteHustle settings. Fill in every "TODO" before going live.
-# The scripts refuse to send email while a TODO is left in the business block.
+# SiteHustle defaults. Shareable: no personal details here.
+# Put YOUR details in config.local.yaml (git-ignored), copied from config.local.example.yaml.
+# Keys (Resend, Netlify, Stripe) go in .env, copied from .env.example.
 
 business:
-  name: "TODO Studio Name"            # e.g. "Susquehanna Web Co." Shown in emails and site footers
-  sender_name: "TODO First Name"      # The person the emails come from (a real first name works best)
-  sender_email: "TODO hello@yourdomain.com"   # An address on the domain you verified in Resend
-  reply_to: "TODO hello@yourdomain.com"       # Forward this inbox to your Gmail so Claude can read replies
-  owner_digest_email: "TODO your personal email"  # Gets the daily approval digest and payment alerts
-  # US anti-spam law (CAN-SPAM) requires a real postal address in every commercial email.
-  # A PO box or virtual mailbox is fine.
-  postal_address: "TODO PO Box 123, Mechanicsburg, PA 17055"
-  website: ""                          # Optional: your own portfolio site
+  name: "TODO"                 # studio name (if it isn't your legal name, PA requires a fictitious-name filing)
+  sender_name: "TODO"          # your real full name: the person accountable for every email
+  sender_email: "TODO"
+  reply_to: "TODO"
+  phone: "TODO"
+  owner_digest_email: "TODO"   # where the daily approval digest goes
+  postal_address: "TODO"       # required in every sales email by CAN-SPAM (a registered PO box is fine)
+  based_in: ""                 # optional, only if true, e.g. "in Mechanicsburg"
+  website: ""
 
 offer:
   price_usd: 500
-  # Stripe Payment Link for $500. Each lead gets ?client_reference_id=<lead id> added so payments match automatically.
-  stripe_payment_link: "TODO https://buy.stripe.com/..."
+  hosting_months: 12
+  renewal_usd: 120             # optional yearly renewal after the included term; or a free file handover
+  stripe_payment_link: "TODO"  # a $500 Stripe Payment Link
+  terms_url: "TODO"            # one-page terms + refund policy (have a PA attorney look it over)
   includes:
-    - "A mobile-friendly site with your full menu, hours, map and click-to-call"
-    - "Connecting your existing domain (or help getting one)"
-    - "Two rounds of edits after launch"
-    - "Free hosting (no monthly fee)"
+    - "A mobile-friendly site with your menu, hours, map and tap-to-call"
+    - "12 months of hosting, with routine menu, price and hours updates included"
+    - "Checking your Google Business Profile hours, phone and website link"
+    - "Connecting your own domain if you have one"
 
 targeting:
-  # Mechanicsburg, PA first. Add more areas here as you expand.
   areas:
     - name: "Mechanicsburg, PA"
       lat: 40.2140
       lon: -77.0086
       radius_m: 9000
   skip_chains: true
-  # Sites scoring at or above this (1-10 scale) are left alone. They already look fine.
+  # Pitch only sites scoring 5 or lower on the 1-10 rubric (RUNBOOK). Never pitch places with a decent site.
   max_design_score_to_pitch: 5
+  # The council recommends excluding places that already have a POS / ordering-vendor site
+  # (Square, Toast, Slice, order.online) unless the pitch says it complements that site.
+  skip_vendor_sites: true
 
 outreach:
-  # trial  = everything is queued; you get a daily digest and reply APPROVE to send it.
-  # auto   = emails go out with no review.
-  mode: trial
-  trial_ends: "2026-12-07"           # On this date the daily run switches mode to auto by itself
-  daily_send_limit: 15               # Keep this low while the new domain warms up (raise slowly to ~40)
+  # paused = nothing sends.  manual = only items you approved in a digest send.
+  # There is no automatic mode, and any other value sends nothing.
+  mode: paused
+  daily_send_limit: 5
   followup_after_days: 5
-  max_followups: 1                   # One polite follow-up, then stop
-  send_window_hours_local: [9, 16]   # Only send between 9am and 4pm US Eastern on weekdays
+  max_followups: 1
+  send_window_hours_local: [9, 16]   # US Eastern, weekdays
 
 hosting:
   provider: netlify
-  site_name_prefix: "preview-"       # Preview sites are at preview-<slug>.netlify.app
+  preview_site_prefix: "previews-"   # one shared, unindexed preview site with unguessable paths
+  preview_base_url: ""               # optional: e.g. https://preview.yourstudio.com once you point a domain at it
+  preview_ttl_days: 30               # unsold previews come down after this

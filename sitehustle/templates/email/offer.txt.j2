@@ -1,0 +1,23 @@
+Subject: Re: {{ subject }}
+
+Hi {{ greeting }},
+
+Thanks for getting back to me. Here are the details.
+
+What you get, for ${{ offer.price_usd }} one time:
+{% for i in offer.includes %}- {{ i }}
+{% endfor %}
+After {{ offer.hosting_months }} months you can either renew hosting and updates for ${{ offer.renewal_usd }} a year, or I'll hand the site files over to you for free so you can host them anywhere. Your choice, no automatic charges.
+
+The full terms (including the refund policy) are here:
+{{ offer.terms_url }}
+
+Next steps:
+1. Reply with any changes you'd like to the concept, and please confirm the menu, prices and hours are right.
+2. Reply "go ahead" from this address so I know you're authorized to order for {{ r.name }}.
+3. Pay here once you're happy: {{ claim_url }}
+
+I launch within 2 business days of steps 2 and 3.
+
+{{ biz.sender_name }}
+{{ biz.name }}{% if biz.phone %} · {{ biz.phone }}{% endif %}

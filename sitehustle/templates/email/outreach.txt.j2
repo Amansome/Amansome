@@ -2,25 +2,24 @@ Subject: {{ subject }}
 
 Hi {{ greeting }},
 
-I live nearby and {{ compliment }}. I was looking at {{ r.name }}'s website and noticed {{ problems_sentence }}
+My name is {{ biz.sender_name }}, and I build websites for local restaurants{% if biz.based_in %} {{ biz.based_in }}{% endif %}.{% if observation %} {{ observation }}{% endif %}
 
-So I built you a new one, free to look at:
+{% if has_site %}I looked at {{ r.name }}'s website and noticed {{ problems }}.{% else %}I couldn't find a website for {{ r.name }}, only {{ presence }}.{% endif %} So I made a free concept of what a {% if has_site %}new {% endif %}site could look like, using your publicly posted menu and hours:
 {{ r.preview_url }}
 
-It has {{ highlights_sentence }}.
+It has {{ highlights }}. It was built only from what's published online, so if anything is out of date, tell me and I'll fix it.
 
-If you like it, it's ${{ offer.price_usd }} one time and it's yours:
+If you'd like it, it's ${{ offer.price_usd }} one time, and that covers:
 {% for i in offer.includes %}- {{ i }}
 {% endfor %}
-You can pay here and I'll take it live within 2 business days:
-{{ r.claim_url }}
+Nothing is due until you've seen the finished version and you're happy with it. Just reply and I'll send the details.
 
-If you'd like changes first, just reply to this email.
+If it's not for you, no problem at all.
 
 Thanks,
 {{ biz.sender_name }}
-{{ biz.name }}
+{{ biz.name }}{% if biz.phone %} · {{ biz.phone }}{% endif %}
 
 --
-{{ biz.name }} · {{ biz.postal_address }}
-You got this one-time note because {{ r.name }} lists a public business email. Reply "unsubscribe" and you won't hear from me again.
+This is a sales email from {{ biz.name }}, {{ biz.postal_address }}.
+I sent it to the address {{ r.name }} lists publicly. I'll follow up at most once. Reply "unsubscribe" and you won't hear from me again.

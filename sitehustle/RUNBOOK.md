@@ -1,79 +1,73 @@
-# SiteHustle daily runbook
+# SiteHustle runbook (for Claude)
 
-You are the operator of SiteHustle, a one-person web studio. The owner wants to do nothing
-except get paid. Run this checklist once per weekday, from the `sitehustle/` folder, then
-commit and push `data/`, `sites/` and `outbox/` to the working branch.
+You prepare everything; the owner approves everything that leaves. Work from the `sitehustle/` folder.
+Never commit `data/`, `sites/`, `outbox/`, `.env` or `config.local.yaml` (they're git-ignored; keep it that way).
 
-Ground rules, which take priority over everything below:
-- Contact only businesses, at an email address the business itself publishes (its website, Google
-  listing, or Facebook "About" page). Never guess addresses or use personal emails.
-- One first email and at most one follow-up per restaurant. Anyone who says no, stop, or unsubscribe is
-  marked right away (`mark <id> unsubscribed`) and never contacted again.
-- Never claim to be the restaurant, a customer, or affiliated with any platform. Previews keep the
-  "concept preview" bar and `noindex` until the restaurant pays.
-- Never invent menu items, prices, hours, reviews, or history. Use only what the restaurant has published.
-  If something is unknown, leave it out. Quote reviews only from public Google/Yelp text, with the source named.
-- Never commit secrets. Credentials are added by the environment's network proxy.
-- If anything looks risky or unusual (legal threat, angry reply, a refund request, a payment you
-  can't match), do not improvise: email the owner a short summary with `send_email` via a
-  one-off Python call, and leave the lead alone.
+## Ground rules (these win over everything below)
 
-## 1. Inbox (replies, approvals, unsubscribes)
-Search the owner's Gmail (connector) for messages to the business inbox from the last 2 days
-(`label:sitehustle newer_than:2d`, or search by the business domain if the label is missing).
-- **Owner digest reply** that says APPROVE: run `python3 scripts/hustle.py approve`. If it says
-  `SKIP L0003, L0007`, run `approve L0003 L0007` (those IDs are held back) and delete their outbox files.
-- **Unsubscribe / not interested**: `mark <id> unsubscribed` or `mark <id> lost "<reason>"`.
-- **Questions or change requests before paying**: `mark <id> replied`. Answer helpfully and briefly from the
-  business address. Make the requested edits to the lead JSON, then `build` and `deploy` again, and reply with
-  the updated link and the payment link. Do not discount below $400. Offer $400 only if they say price is the
-  only blocker.
-- **After launch, edit requests**: apply them, `build <id> --final`, `deploy <id>`, then reply. Two rounds
-  are included. A third or more: politely quote $75 per round.
-- Reply from the business address through Resend: write a short Python snippet that imports
-  `hustle` and calls `send_email(cfg(), to, "Re: <subject>", body, {"In-Reply-To": <their Message-ID>})`.
+- **Nothing sends without the owner.** Every email (first touch, follow-up, reply, offer, launch notice) goes
+  through `digest` → the owner replies `APPROVE <digest-id>` → `approve <digest-id>` → `send`. Never set
+  `outreach.mode` to anything but `paused` or `manual`, and never switch to `manual` yourself.
+- **First-touch email only through a provider that has said yes in writing** to this exact use (the owner keeps that
+  answer). Resend's acceptable-use policy bans cold outreach. Until there's a written yes, do the in-person list (step 4).
+- **No invented facts.** Every menu item, price and hour comes from the restaurant's own published source. Record it
+  in `content_source`. If you can't find it, leave it out. `observation` lines must be checkable facts with an
+  `observation_source` ("A lot of your Google reviews mention the rigatoni"), never personal experience.
+- **Never claim** to be a customer, a neighbour, or affiliated with the restaurant or any platform.
+- **Never negotiate.** Prices, discounts, refunds, timelines and promises in replies are drafted for the owner to approve.
+  There is one price.
+- **Contact only published business emails**, and record where you found each one in `email_source`. Skip any site with a
+  no-solicitation or no-harvesting notice.
+- **Stop on trouble.** An angry reply, legal threat, refund request or anything odd: `mark <id> hold "<why>"`, and put a
+  one-line summary at the top of the next digest. Don't reply.
+- **Unsubscribe / no / bounce:** `mark <id> unsubscribed|lost|bounced`. This suppresses the address for good.
+
+## 1. Inbox
+Read replies to the business inbox (Gmail connector, label `sitehustle`, or whatever the owner set up). Track which
+message ids you've handled in `data/processed_messages.txt` and never act on one twice.
+- `APPROVE <digest-id> [SKIP ids]` from the owner: run `python3 scripts/hustle.py approve <digest-id> [SKIP ids]`.
+- Interested restaurant: `mark <id> replied`, then `offer <id>` (it queues the details, terms link and payment link for approval).
+- Questions or change requests: apply the edits to the lead JSON → `upsert` → `build <id>` → `publish-previews`,
+  then write a draft (first line `Subject: Re: ...`) and `reply <id> draft.txt`.
+- "Go ahead" from the restaurant's published address: `confirm <id> "reply from <address> on <date>: go ahead"`.
 
 ## 2. Payments
-`python3 scripts/hustle.py payments`. For each newly paid lead, run `launch <id>`. If their reply
-mentioned a domain, set `"domain"` on the lead first (via `upsert`).
+`payments`. A matched payment with a confirmation → `launch <id>` (the "you're live" email waits for approval).
+Paid without a confirmation: draft a reply asking for it. An amount mismatch puts the lead on hold for the owner.
 
-## 3. Send
-`python3 scripts/hustle.py followups`, then `python3 scripts/hustle.py send`.
-(The script enforces the trial/auto mode, the daily limit, the weekday 9 to 4 ET window, and the
-suppression list. It switches to auto mode itself on `trial_ends`.)
+## 3. Research (the supply count comes first)
+1. `discover`, or web search ("Mechanicsburg PA restaurants", "... pizza", "... diner", local directories).
+2. For each place, set `site_type`: `own_decent` | `vendor` (Square/Toast/Slice/order.online site) | `weak` | `broken` | `none`.
+   Skip chains. With `skip_vendor_sites: true`, mark vendor-site places `skipped`.
+3. Score the site 1 to 10. Start at 10 and subtract:
+   - 3 if it isn't mobile-friendly;
+   - 2 if the menu is only a PDF or image, or missing;
+   - 2 if it looks dated;
+   - 1 for no HTTPS;
+   - 1 if hours, phone or address are hard to find;
+   - 1 for broken links or pages;
+   - 1 if it's slow or covered in popups.
 
-## 4. Find and research new leads (target: enough to fill tomorrow's send limit)
-1. `python3 scripts/hustle.py discover` (OpenStreetMap). If it fails or runs dry, use web search:
-   "<area> restaurants", "<area> pizza", "<area> diner", "<area> cafe", and local directories such as
-   visitcumberlandvalley.com, which link to each restaurant's own site.
-2. For each `new` lead, skip chains and franchises, and skip anything already in `leads.json`.
-3. Fetch its website (and contact/menu pages). Score the design 1 to 10 with this rubric, starting at 10:
-   - -3 not mobile-friendly (no viewport meta, fixed-width layout, tiny text)
-   - -2 menu only as a PDF or image, or missing
-   - -2 dated look (table layouts, clip art, Flash remnants, copyright 4+ years old, stock template)
-   - -1 no HTTPS, or a certificate error
-   - -1 hours, phone, or address hard to find on the homepage
-   - -1 broken links/images, or "under construction"
-   - -1 slow, or popups everywhere
-   - No website at all (Facebook or a delivery app only) counts as a 2, a strong lead if an email is published.
-   If the score is above `max_design_score_to_pitch` (config), set `status: skipped` with the reason.
-4. Find a published business email (site footer, contact page, Google listing, Facebook About). None: `skipped`.
-5. Collect the content for the new site: name, address, phone, hours (as written), the menu (sections,
-   items, descriptions, prices exactly as published), order/reservation links, social links, a 2-paragraph
-   "about" written from facts on their site, and up to 2 of their own photo URLs (`hero_image`, `about_image`)
-   if they're good quality. Otherwise leave those out; the template has a styled fallback.
-6. Write the pitch: `pitch.greeting` (owner's first name if published, else "<Name> team"), `pitch.compliment`
-   (a genuine, specific line from real reviews or their story, not flattery), `pitch.problems` (the 2 most
-   visible issues, said kindly and concretely), `pitch.highlights` (3 to 4), and an optional `pitch.subject`.
-7. Save it as JSON matching `examples/sample-lead.json` (set `"status": "researched"`), then run:
-   `upsert <file>` → `build <id>` → `deploy <id>`.
-8. Look at the built page before deploying (render a phone-width screenshot). Fix anything that looks off.
-9. `python3 scripts/hustle.py queue`.
+   No site counts as 2. Above `max_design_score_to_pitch` → `skipped`.
+4. Run `count` until at least 30 places are researched. **Stop and tell the owner** if 2 or fewer of 30 fall in
+   "no or broken site + published email".
+5. For pitchable places, collect only published facts (name, address, phone, hours, menu with prices, order and
+   reservation links) and record `content_source` and `email_source`. Photos and review quotes are used only after the
+   restaurant agrees (`permissions`).
+6. Write `pitch`: `greeting`, optional `observation` with `observation_source`, `problems` (2, concrete and kind; only
+   for places with a site), `presence` (for no-site places, e.g. "a Facebook page"), `highlights`.
+7. Save as JSON like `examples/sample-lead.json` (no `id`), then `upsert` → `build <id>`.
+8. Screenshot the preview at phone width and compare every price and hour to the source. Fix it or drop the lead.
+9. `publish-previews`, then `queue`. Places with no published email go on the owner's in-person list.
 
-## 5. Approval digest (trial mode only)
-If config `outreach.mode` is `trial`, run `python3 scripts/hustle.py digest`.
+## 4. In-person list
+Write `data/in_person.md` with the best 5 no-email or no-site places: name, address, a good time to visit
+(2 to 4 pm), the preview link, and the one question the owner should ask ("Would you pay $500 one time for this,
+or less plus a small monthly fee that covers menu changes?"). Record what the owner reports back on each lead.
 
-## 6. Wrap up
-`python3 scripts/hustle.py status`. Commit with a message like `daily run: 12 researched, 8 queued, 1 paid`,
-then push. If something blocked the run (a missing credential, a host refused), email the owner one short
-line saying what they need to fix.
+## 5. Follow-ups and housekeeping
+`followups` (queued for approval, at most one per place), then `cleanup` to take down stale previews.
+
+## 6. Digest
+`digest` every weekday, even when nothing is waiting: its status line is how the owner knows the run happened. Put any
+held items or problems at the top.

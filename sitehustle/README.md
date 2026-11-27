@@ -1,62 +1,73 @@
 # SiteHustle
 
-An automated side hustle: find local restaurants with weak websites, build each one a better site
-for free, email the owner the link, and charge **$500** to make it theirs.
+Finds independent restaurants with weak or missing websites, builds each a free concept preview, and helps you
+pitch it for **$500 one time** (12 months of hosting and menu updates included, then renewal or a free handover).
 
-Your only job is getting paid (plus about 2 minutes a day approving emails for the first week).
+**This is a small part-time business, not passive income.** An advisory council reviewed the first version
+(`council/RECOMMENDATION.md`) and every seat rejected running it unattended. This version is rebuilt around their
+findings. Claude does the research, building and drafting, and **you approve every email before it goes out.**
+Expect about 3 to 8 hours over the first 3 months, plus 1 to 2 hours per sale.
 
+## Safety built in (each has a regression test in `tests/`)
+
+- **Nothing sends by default.** `outreach.mode` is `paused`; the only sending mode is `manual`, and any other value
+  sends nothing. There is no automatic mode or date switch.
+- **Approval covers only what you saw.** An approval names a digest id and is used once.
+- **No double emails.** A restaurant can never get a second first-touch email. Re-importing a lead never moves it
+  backwards, and lead ids and site names can't collide.
+- **Stopping is easy.** `hold` stops everything for a lead; `lost`, `unsubscribed` and `bounced` suppress it forever.
+- **Failures are reported.** One bad address doesn't block the rest; failures and paid-but-not-launched sites show in
+  the daily status line.
+- **No launch on payment alone.** It needs the exact price **and** the restaurant's written go-ahead.
+- **Honest emails.** No "I live nearby" or fake compliments. Each is labelled as a sales email, with your real name,
+  phone and postal address. The first email has no payment link.
+- **Honest previews.** No payment link, no invented copy, and no photos or review quotes without permission. Each
+  preview is labelled "not affiliated", unindexed, and on one shared site at an unguessable address. It comes down
+  after 30 days.
+- **Private data.** Leads, previews, emails, keys and your details never go into git.
+
+## Run it on your own computer
+
+```bash
+git clone <your repo> && cd <repo>/sitehustle
+python3 -m pip install requests pyyaml jinja2
+cp config.local.example.yaml config.local.yaml   # your name, phone, address, digest email
+cp .env.example .env                              # keys, once you have them
+python3 -m unittest discover -s tests             # should print OK
+python3 scripts/hustle.py status
 ```
- Discover ─► Score site ─► Build preview ─► Deploy (Netlify) ─► Email owner ─► Follow up once
- (OSM + web)   (1-10)     (template + their    (preview-x.        (Resend, from     │
-                           real menu/hours)     netlify.app)       your domain)      ▼
-                                                        Stripe payment ◄── owner clicks "make it yours"
-                                                               │
-                                              Launch final site + DNS instructions + 2 edit rounds
-```
 
-| Piece | What does it |
-|---|---|
-| `scripts/hustle.py` | Engine: stores leads, builds/deploys sites, sends email, follows up, matches payments |
-| `RUNBOOK.md` | What the daily scheduled Claude run does (research, scoring, replies, judgment calls) |
-| `templates/site/` | The restaurant website template (10 themes picked from the cuisine) |
-| `templates/email/` | Outreach, follow-up and "you're live" emails, with the CAN-SPAM footer |
-| `config.yaml` | Your business details, price, area, send limits, trial/auto mode |
-| `data/leads.json` | The CRM: every restaurant and where it is in the pipeline |
-| `data/suppression.txt` | Do-not-contact list |
+Then open Claude Code in `sitehustle/` and say: *"Follow RUNBOOK.md. Start with the supply count."*
 
-## One-time setup (about 45 minutes, about $20)
+## What to do, in order (the council's plan)
 
-1. **Domain + inbox.** Buy a short domain for your studio (e.g. Namecheap/Cloudflare, about $12/yr). Create an inbox
-   on it, like `hello@yourdomain.com` (Google Workspace about $7/mo, or free forwarding from Cloudflare/ImprovMX).
-   **Forward that inbox to your Gmail** and add a Gmail filter that labels it `sitehustle`, so the daily run can
-   read replies.
-2. **Resend** (sends the email; free for 3,000/mo): sign up at resend.com, add and verify your domain (it gives you
-   DNS records to paste in), then create an API key.
-3. **Netlify** (hosts the sites; free): sign up, then User settings → Applications → *New access token*.
-4. **Stripe** (gets you paid): create an account and connect your bank. Make a **Payment Link** for $500
-   ("Restaurant website: build + launch"). Then create a **restricted key** with *Checkout Sessions: Read* only.
-5. **Fill in `config.yaml`**: studio name, your first name, sender and reply-to address, your personal email for
-   digests, a mailing address (a PO box is fine, and the law requires one), and the Stripe link.
-6. **Tell Claude you're done.** Claude will ask for the three keys through a secure form. They're stored in the
-   cloud environment and never in this repo. Claude then runs a test, and creates the weekday scheduled task.
+1. **Free supply count (no contact).** Claude researches 30+ nearby places and runs `count`. If 2 or fewer of 30
+   have no or a broken site plus a published email, stop there, or try in person only.
+2. **In-person test (recommended first).** Show 5 previews on your phone to owners between 2 and 4 pm, and ask
+   whether they'd pay. Claude writes the list in `data/in_person.md`.
+3. **Email test, only with a written yes.** Ask an email provider in writing whether this exact use is allowed.
+   Resend's policy bans cold outreach. If a provider says yes, add its key and set `mode: manual`. Then send 20 to 30
+   emails you approve, starting with a few to your own test inboxes to check they don't land in spam.
+4. **Before the first payment:**
+   - a one-page terms and refund page (`offer.terms_url`; have a PA attorney look at it);
+   - decide whether to trade under your own name or file a fictitious name;
+   - ask a tax professional about PA sales tax.
 
-## Day to day
-- **Week 1 (trial):** each weekday you get a digest email with every pitch and its preview link. Reply `APPROVE`
-  (or `SKIP L0004` to hold one back). That's it.
-- **After `trial_ends`:** emails send automatically. You get an email only when someone pays, or if something needs a human.
-- **Money:** Stripe pays out to your bank automatically.
+The council's stop rules: 0 sales and fewer than 2 interested replies after 30 pitches, or any complaint → stop.
+
+## Accounts (only when you get to step 3)
+
+- **Email:** a provider that confirms in writing that this use is allowed, sending from a new domain (about $12/yr)
+  with SPF, DKIM and DMARC set up.
+- **Netlify** (hosting, `NETLIFY_TOKEN`): one shared preview site keeps you inside the free plan. Each paid site gets
+  its own site, so consider a paid plan or hand sites over to the restaurant.
+- **Stripe:** a $500 Payment Link, plus a restricted key with *Checkout Sessions: Read* only.
 
 ## Commands
-```
-python3 scripts/hustle.py status | discover | upsert <file> | build <id> [--final] | deploy <id>
-                          queue | digest | approve [SKIP_IDS] | send | followups | payments
-                          launch <id> | mark <id> <status> [note] | suppress <email|domain>
-```
 
-## Ground rules (built in)
-- Only contacts businesses at emails they publish; one email plus one follow-up, max; honors unsubscribes forever.
-- Every email has your real name, business, postal address, and an unsubscribe line (CAN-SPAM).
-- Starts at 15 emails per weekday so the new domain builds a good sending reputation.
-- Previews say "concept preview" and are hidden from Google until the restaurant pays.
-- Never makes up menu items, prices, or reviews.
-- Pay tax on the income: it's self-employment income, so set aside about 25-30%.
+```
+python3 scripts/hustle.py status | count | discover | upsert <file> | build <id> [--final]
+  publish-previews | cleanup | queue | reply <id> <draft> | offer <id> | digest [--print]
+  approve <digest-id> [SKIP ids] | send | followups | payments | confirm <id> <note>
+  launch <id> | mark <id> <status> [note] | suppress <email|domain> | failures
+```

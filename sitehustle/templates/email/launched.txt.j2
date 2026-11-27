@@ -2,17 +2,17 @@ Subject: {{ r.name }}: your new website is live
 
 Hi {{ greeting }},
 
-Thank you for your payment! Your new site is live at:
+Thank you! Your new site is live at:
 {{ r.live_url }}
 
-To show it on your own domain ({{ r.domain or "your domain" }}), log in to the company you bought the domain from (GoDaddy, Squarespace, Google, etc.) and set these two DNS records:
+To show it on your own domain, log in to the company you bought it from (GoDaddy, Squarespace, Google, etc.) and set these two DNS records:
 
   Type A      Name @      Value 75.2.60.5
   Type CNAME  Name www    Value {{ r.netlify_subdomain }}.netlify.app
 
-If you'd rather I do it, reply with who your domain is registered with and I'll walk you through it in two minutes. It can take up to a few hours to switch over.
+If you'd rather I do it, reply with who your domain is with and I'll walk you through it. It can take a few hours to switch over.
 
-Your two rounds of edits are included. Just reply with what you'd like changed.
+Hosting and routine menu, price and hours updates are included until {{ r.hosting_until }}. Just reply with any change and I'll make it within 2 business days. Before that date I'll ask whether you'd like to renew or have the files handed over to you.
 
 {{ biz.sender_name }}
-{{ biz.name }}
+{{ biz.name }}{% if biz.phone %} · {{ biz.phone }}{% endif %}
