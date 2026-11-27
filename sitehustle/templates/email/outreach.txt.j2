@@ -1,0 +1,26 @@
+Subject: {{ subject }}
+
+Hi {{ greeting }},
+
+I live nearby and {{ compliment }}. I was looking at {{ r.name }}'s website and noticed {{ problems_sentence }}
+
+So I built you a new one, free to look at:
+{{ r.preview_url }}
+
+It has {{ highlights_sentence }}.
+
+If you like it, it's ${{ offer.price_usd }} one time and it's yours:
+{% for i in offer.includes %}- {{ i }}
+{% endfor %}
+You can pay here and I'll take it live within 2 business days:
+{{ r.claim_url }}
+
+If you'd like changes first, just reply to this email.
+
+Thanks,
+{{ biz.sender_name }}
+{{ biz.name }}
+
+--
+{{ biz.name }} · {{ biz.postal_address }}
+You got this one-time note because {{ r.name }} lists a public business email. Reply "unsubscribe" and you won't hear from me again.

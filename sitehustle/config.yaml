@@ -1,0 +1,48 @@
+# SiteHustle settings. Fill in every "TODO" before going live.
+# The scripts refuse to send email while a TODO is left in the business block.
+
+business:
+  name: "TODO Studio Name"            # e.g. "Susquehanna Web Co." Shown in emails and site footers
+  sender_name: "TODO First Name"      # The person the emails come from (a real first name works best)
+  sender_email: "TODO hello@yourdomain.com"   # An address on the domain you verified in Resend
+  reply_to: "TODO hello@yourdomain.com"       # Forward this inbox to your Gmail so Claude can read replies
+  owner_digest_email: "TODO your personal email"  # Gets the daily approval digest and payment alerts
+  # US anti-spam law (CAN-SPAM) requires a real postal address in every commercial email.
+  # A PO box or virtual mailbox is fine.
+  postal_address: "TODO PO Box 123, Mechanicsburg, PA 17055"
+  website: ""                          # Optional: your own portfolio site
+
+offer:
+  price_usd: 500
+  # Stripe Payment Link for $500. Each lead gets ?client_reference_id=<lead id> added so payments match automatically.
+  stripe_payment_link: "TODO https://buy.stripe.com/..."
+  includes:
+    - "A mobile-friendly site with your full menu, hours, map and click-to-call"
+    - "Connecting your existing domain (or help getting one)"
+    - "Two rounds of edits after launch"
+    - "Free hosting (no monthly fee)"
+
+targeting:
+  # Mechanicsburg, PA first. Add more areas here as you expand.
+  areas:
+    - name: "Mechanicsburg, PA"
+      lat: 40.2140
+      lon: -77.0086
+      radius_m: 9000
+  skip_chains: true
+  # Sites scoring at or above this (1-10 scale) are left alone. They already look fine.
+  max_design_score_to_pitch: 5
+
+outreach:
+  # trial  = everything is queued; you get a daily digest and reply APPROVE to send it.
+  # auto   = emails go out with no review.
+  mode: trial
+  trial_ends: "2026-12-07"           # On this date the daily run switches mode to auto by itself
+  daily_send_limit: 15               # Keep this low while the new domain warms up (raise slowly to ~40)
+  followup_after_days: 5
+  max_followups: 1                   # One polite follow-up, then stop
+  send_window_hours_local: [9, 16]   # Only send between 9am and 4pm US Eastern on weekdays
+
+hosting:
+  provider: netlify
+  site_name_prefix: "preview-"       # Preview sites are at preview-<slug>.netlify.app
